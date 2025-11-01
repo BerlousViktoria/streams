@@ -1,0 +1,66 @@
+﻿#include <fstream>
+#include <iostream>
+#include <string>
+#include <windows.h> 
+
+
+// ВАЖЛИВО: файл inFile.txt ПОТРІБНО створити попередньо.
+// Цей файл повинен існувати і бути заповненим рядками для копіювання у вихідний файл ще до виконання програми.
+
+using namespace std;
+
+int main() {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+
+// ifstream - читання файлу, ofstream - записування файлу
+// is_open() - метод, який перевіряє, чи потік успіщно приєднався до файлу
+
+	string inFileName, outFileName;// рядки, які описують назву файлу
+	string line;// рядок, який буде зберігатися у файлі
+
+	ifstream inFile; 
+	ofstream outFile;
+
+	cout << "Введіть назву файла введення: \n";
+	cin >> inFileName;
+	cout << "Введіть назву файла виведення: \n";
+	cin >> outFileName;
+
+	inFile.open(inFileName);
+	outFile.open(outFileName);
+
+	if (inFile.is_open() && outFile.is_open()) {
+		cout << "Файли успішно відкрились! Продовжуємо роботу. \n";
+
+		// введення рядків у файли, якщо файл все ж відкрився
+
+		while (getline(inFile , line)) {
+			cout << "Ви щойно ввели: " << line << endl;
+			outFile << line;
+			outFile << "\n\n";
+		}
+		cout << "Копіювання завершено. Перевірте файл outFile.txt. \n";
+
+		inFile.close();
+		outFile.close();
+	}
+	else {
+		cerr << "Файл не вдалося відкрити!\n";
+		if (!outFile.is_open()) {
+			cerr << "Вхідний файл - " << outFileName << " - не вдалося відкрити!";
+		}
+		else if (!inFile.is_open()) {
+			cerr << "Вхідний файл - " << inFileName << " - не вдалося відкрити!";
+		}
+
+		if (inFile.is_open()) inFile.close();//якщо раптом один потік відкрився, а інший - ні, то закриваємо 
+		if (outFile.is_open()) outFile.close();
+
+		return 1;
+	}
+
+	return 0;
+	system("pause");
+
+}
